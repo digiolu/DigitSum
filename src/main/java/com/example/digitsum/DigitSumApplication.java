@@ -2,9 +2,11 @@ package com.example.digitsum;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.MediaType;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -16,13 +18,18 @@ public class DigitSumApplication {
 }
 
 @RestController
+@RequestMapping("/api/digitsum")
 class DigitSumController {
     private int usageCount = 0;
 
-    @GetMapping(value = "/digit-sum/{number}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public Object calculateDigitSum(@PathVariable int number) {
-        usageCount++;
+    @GetMapping("/usage")
+    public int getUsageCount() {
+        return usageCount;
+    }
 
+    @GetMapping
+    public int calculateDigitSum(@RequestParam("number") int number) {
+        usageCount++;
         int sum = 0;
         int temp = number;
 
@@ -32,18 +39,7 @@ class DigitSumController {
             temp /= 10;
         }
 
-        return new DigitSumResponse(number, sum, usageCount);
+        return sum;
     }
 }
 
-class DigitSumResponse {
-    public int number;
-    public int digitSum;
-    public int usageCount;
-
-    public DigitSumResponse(int number, int digitSum, int usageCount) {
-        this.number = number;
-        this.digitSum = digitSum;
-        this.usageCount = usageCount;
-    }
-}
